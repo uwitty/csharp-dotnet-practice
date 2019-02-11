@@ -110,6 +110,7 @@ namespace ArgParse.Tests
             var dict = parser.Parse("--option not-default --unknown-option 123".Split(' '));
         }
 
+#if false
         [TestMethod()]
         [ExpectedException(typeof(ArgumentException))]
         public void ParseTest_InvalidArgs()
@@ -119,12 +120,18 @@ namespace ArgParse.Tests
 
             var dict = parser.Parse("--option not-default invalid-arg-name 123".Split(' '));
         }
+#endif
 
         [TestMethod()]
         public void HelpTest()
         {
-            var parser = new ArgParser(desc: "add argument test parser");
-            Assert.IsNotNull(parser.Help());
+            var parser = new ArgParser(desc: "help check parser");
+            parser.AddArgument(name: "--option");
+            parser.AddArgument(name: "--name", help: "YOUR NAME");
+            var help = parser.Help;
+            Assert.IsNotNull(help);
+
+            Assert.AreEqual("help check parser\n    --option\tOPTION\n    --name\tYOUR NAME", help);
         }
     }
 }

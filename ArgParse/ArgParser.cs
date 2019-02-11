@@ -10,6 +10,20 @@ namespace ArgParse
     {
         public string Desc { get; private set; }
         public Dictionary<string, Argument> Arguments { get; private set; }
+        public string Help
+        {
+            get
+            {
+                string help = Desc;
+                foreach (var arg in Arguments.Values)
+                {
+                    var argHelp = (arg.Help != null) ? arg.Help : arg.Name.Substring(2).ToUpper();
+                    help += String.Format("\n    {0}\t{1}", arg.Name, argHelp);
+                }
+                return help;
+            }
+        }
+
 
         public ArgParser(string desc = "")
         {
@@ -59,11 +73,6 @@ namespace ArgParse
             }
 
             return dict.Concat(defaultValues.Where(e => !dict.ContainsKey(e.Key))).ToDictionary(e => e.Key, e => e.Value);
-        }
-
-        public string Help()
-        {
-            return Desc;
         }
 
         private object GetOptionalArgumentValue(string arg, string value)
