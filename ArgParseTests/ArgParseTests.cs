@@ -60,8 +60,8 @@ namespace ArgParse.Tests
             parser.AddArgument("--option", "default");
 
             var dict = parser.Parse(new string[0]);
-            Assert.IsTrue(dict.ContainsKey("option"));
-            Assert.AreEqual<string>("default", (string)dict["option"]);
+            Assert.IsTrue(dict.ContainsKey("--option"));
+            Assert.AreEqual<string>("default", (string)dict["--option"]);
         }
 
         [TestMethod()]
@@ -71,8 +71,8 @@ namespace ArgParse.Tests
             parser.AddArgument("--option", "default");
 
             var dict = parser.Parse("--option not-default".Split(' '));
-            Assert.IsTrue(dict.ContainsKey("option"));
-            Assert.AreEqual<string>("not-default", (string)dict["option"]);
+            Assert.IsTrue(dict.ContainsKey("--option"));
+            Assert.AreEqual<string>("not-default", (string)dict["--option"]);
         }
 
         [TestMethod()]
@@ -83,10 +83,10 @@ namespace ArgParse.Tests
             parser.AddArgument<int>("--int-option");
 
             var dict = parser.Parse("--option not-default --int-option 1".Split(' '));
-            Assert.IsTrue(dict.ContainsKey("option"));
-            Assert.AreEqual<string>("not-default", (string)dict["option"]);
-            Assert.IsTrue(dict.ContainsKey("int-option"));
-            Assert.AreEqual<int>(1, (int)dict["int-option"]);
+            Assert.IsTrue(dict.ContainsKey("--option"));
+            Assert.AreEqual<string>("not-default", (string)dict["--option"]);
+            Assert.IsTrue(dict.ContainsKey("--int-option"));
+            Assert.AreEqual<int>(1, (int)dict["--int-option"]);
         }
 
         [TestMethod()]
@@ -129,8 +129,8 @@ namespace ArgParse.Tests
             parser.AddArgument(name: "--option");
             parser.AddArgument(name: "--name", help: "YOUR NAME");
             var help = parser.Help;
-            Assert.IsNotNull(help);
 
+            Assert.IsNotNull(help);
             Assert.AreEqual("help check parser\n    --option\tOPTION\n    --name\tYOUR NAME", help);
         }
     }

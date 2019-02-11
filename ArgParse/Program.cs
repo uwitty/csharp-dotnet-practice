@@ -24,8 +24,8 @@ namespace ArgParse
 
                 Dictionary<string, object> args = parser.Parse("--host 192.168.0.1 --port 8080".Split(' '));
 
-                System.Console.WriteLine((string)args["host"]);
-                System.Console.WriteLine((int)args["port"]);
+                System.Console.WriteLine((string)args["--host"]);
+                System.Console.WriteLine((int)args["--port"]);
             }
             catch (ArgumentException e)
             {

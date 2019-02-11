@@ -53,29 +53,19 @@ namespace ArgParse
         public Dictionary<string, object> Parse(string[] args)
         {
             var defaultValues = Arguments.Values.Where(a => a.DefaultValue != null).
-                                ToDictionary(x => x.Name.Substring(2), x => x.DefaultValue);
+                                ToDictionary(x => x.Name, x => x.DefaultValue);
 
-            var dict = new Dictionary<string, object>();
-            for (int i = 0; i < args.Length; i++)
-            {
-                string arg = args[i];
-                string value = (i >= args.Length - 1) ? null : args[i+1];
+            var specifiedValues = args.Zip(args.Skip(1).Concat(new string[] { null }),
+                                           (first, second) => new KeyValuePair<string, string>(first, second)).
+                                  Where(e => e.Key.StartsWith("--")).
+                                  Select(e => GetOptionalArgumentValue(e.Key, e.Value)).
+                                  ToDictionary(e => e.Key, e => e.Value);
 
-                if (arg.StartsWith("--"))
-                {
-                    dict[arg.Substring(2)] = GetOptionalArgumentValue(arg, value);
-                    i++;    // skip value element
-                }
-                else
-                {
-                    throw new ArgumentException("Invalid argument", args.ToString());
-                }
-            }
-
-            return dict.Concat(defaultValues.Where(e => !dict.ContainsKey(e.Key))).ToDictionary(e => e.Key, e => e.Value);
+            return specifiedValues.Concat(defaultValues.Where(e => !specifiedValues.ContainsKey(e.Key))).
+                   ToDictionary(e => e.Key, e => e.Value);
         }
 
-        private object GetOptionalArgumentValue(string arg, string value)
+        private KeyValuePair<string, object> GetOptionalArgumentValue(string arg, string value)
         {
             if (!Arguments.ContainsKey(arg))
             {
@@ -86,7 +76,7 @@ namespace ArgParse
                 throw new ArgumentException("requires value", arg);
             }
 
-            return System.Convert.ChangeType(value, Arguments[arg].Type);
+            return new KeyValuePair<string, object>(arg, System.Convert.ChangeType(value, Arguments[arg].Type));
         }
 
         public class Argument
