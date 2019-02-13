@@ -110,6 +110,17 @@ namespace ArgParse.Tests
             var dict = parser.Parse("--option not-default --unknown-option 123".Split(' '));
         }
 
+        [TestMethod()]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ParseTest_MissRequired()
+        {
+            var parser = new ArgParser(desc: "unknown option");
+            parser.AddArgument("--option", "default");
+            parser.AddArgument("--required");
+
+            var dict = parser.Parse("--option not-default".Split(' '));
+        }
+
 #if false
         [TestMethod()]
         [ExpectedException(typeof(ArgumentException))]

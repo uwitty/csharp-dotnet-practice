@@ -18,6 +18,7 @@ namespace ArgParse
                        Aggregate(Desc, (a, v) => a + "\n    " + v);
             }
         }
+        public IEnumerable<string> RequiredArgs => Arguments.Values.Where(a => a.IsRequired).Select(e => e.Name);
 
         public ArgParser(string desc)
         {
@@ -54,6 +55,12 @@ namespace ArgParse
                                   Where(e => e.Key.StartsWith("--")).
                                   Select(e => GetOptionalArgumentValue(e.Key, e.Value)).
                                   ToDictionary(e => e.Key, e => e.Value);
+
+            var missedArgs = RequiredArgs.Where(e => !specifiedValues.ContainsKey(e));
+            if (missedArgs.Any())
+            {
+                throw new ArgumentException($"{RequiredArgs} are required but missed: ${missedArgs}");
+            }
 
             return specifiedValues.Concat(defaultValues.Where(e => !specifiedValues.ContainsKey(e.Key))).
                    ToDictionary(e => e.Key, e => e.Value);
