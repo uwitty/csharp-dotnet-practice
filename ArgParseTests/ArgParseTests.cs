@@ -127,11 +127,12 @@ namespace ArgParse.Tests
         {
             var parser = new ArgParser(desc: "help check parser");
             parser.AddArgument(name: "--option");
-            parser.AddArgument(name: "--name", help: "YOUR NAME");
+            parser.AddArgument(name: "--name", metavar: "YOUR NAME");
+            parser.AddArgument(name: "--xyz", metavar: "XYZ", help: "city hunter");
             var help = parser.Help;
 
             Assert.IsNotNull(help);
-            Assert.AreEqual("help check parser\n    --name\tYOUR NAME\n    --option\tOPTION", help);
+            Assert.AreEqual("help check parser\n    --name YOUR NAME\n    --option OPTION\n    --xyz XYZ\tcity hunter", help);
         }
     }
 }

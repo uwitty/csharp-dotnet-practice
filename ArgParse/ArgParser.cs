@@ -25,12 +25,12 @@ namespace ArgParse
             this.Arguments = new Dictionary<string, Argument>();
         }
 
-        public void AddArgument(string name, string defaultValue = null, string help = null)
+        public void AddArgument(string name, string defaultValue = null, string metavar = null, string help = null)
         {
-            AddArgument<string>(name, defaultValue, help);
+            AddArgument<string>(name, defaultValue, metavar, help);
         }
 
-        public void AddArgument<ValueType>(string name, ValueType defaultValue = default(ValueType), string help = null)
+        public void AddArgument<ValueType>(string name, ValueType defaultValue = default(ValueType), string metavar = null, string help = null)
         {
             if (Arguments.ContainsKey(name))
             {
@@ -41,7 +41,7 @@ namespace ArgParse
                 throw new ArgumentException("Invalid option name. ", name);
             }
 
-            Arguments.Add(name, new Argument(name, typeof(ValueType), defaultValue, help));
+            Arguments.Add(name, new Argument(name, typeof(ValueType), defaultValue, metavar: metavar, help: help));
         }
 
         public Dictionary<string, object> Parse(string[] args)
@@ -78,21 +78,23 @@ namespace ArgParse
             public string Name { get; private set; }
             public Type   Type { get; private set; }
             public object DefaultValue { get; private set; }
+            public string MetaVar { get; private set; }
             public string Help { get; private set; }
             public string Message {
                 get
                 {
-                    return $"{Name}\t{Help ?? Name.Substring(2).ToUpper()}";
+                    return $"{Name} {MetaVar}" + ((Help != null)? $"\t{Help}" : "");
                 }
             }
 
             public bool IsRequired { get { return DefaultValue == null; } }
 
-            public Argument(string name, Type type, object defaultValue = null, string help=null)
+            public Argument(string name, Type type, object defaultValue = null, string metavar=null, string help=null)
             {
                 this.Name         = name;
                 this.Type         = type;
                 this.DefaultValue = defaultValue;
+                this.MetaVar      = metavar ?? Name.Substring(2).ToUpper();
                 this.Help         = help;
             }
         }
