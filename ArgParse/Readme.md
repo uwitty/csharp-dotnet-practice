@@ -21,10 +21,10 @@
         parser.AddArgument<string>("--host", "localhost");
         parser.AddArgument<int>("--port", 80);
     
-	    Dictionary<string, object> args = parser.Parse("--host 192.168.0.1 --port 8080".Split(' '));
+        Dictionary<string, object> args = parser.Parse("--host 192.168.0.1 --port 8080".Split(' '));
     
-        System.Console.WriteLine((string)args["host"]);
-        System.Console.WriteLine((int)args["port"]);
+        System.Console.WriteLine((string)args["--host"]);
+        System.Console.WriteLine((int)args["--port"]);
     }
     catch (ArgumentException e)
     {
