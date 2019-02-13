@@ -131,7 +131,7 @@ namespace ArgParse.Tests
             var help = parser.Help;
 
             Assert.IsNotNull(help);
-            Assert.AreEqual("help check parser\n    --option\tOPTION\n    --name\tYOUR NAME", help);
+            Assert.AreEqual("help check parser\n    --name\tYOUR NAME\n    --option\tOPTION", help);
         }
     }
 }

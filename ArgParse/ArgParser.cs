@@ -14,18 +14,12 @@ namespace ArgParse
         {
             get
             {
-                string help = Desc;
-                foreach (var arg in Arguments.Values)
-                {
-                    var argHelp = (arg.Help != null) ? arg.Help : arg.Name.Substring(2).ToUpper();
-                    help += String.Format("\n    {0}\t{1}", arg.Name, argHelp);
-                }
-                return help;
+                return Arguments.Values.OrderBy(a => a.Name).Select(a => a.Message).
+                       Aggregate(Desc, (a, v) => a + "\n    " + v);
             }
         }
 
-
-        public ArgParser(string desc = "")
+        public ArgParser(string desc)
         {
             this.Desc = desc;
             this.Arguments = new Dictionary<string, Argument>();
@@ -85,6 +79,12 @@ namespace ArgParse
             public Type   Type { get; private set; }
             public object DefaultValue { get; private set; }
             public string Help { get; private set; }
+            public string Message {
+                get
+                {
+                    return $"{Name}\t{Help ?? Name.Substring(2).ToUpper()}";
+                }
+            }
 
             public bool IsRequired { get { return DefaultValue == null; } }
 
