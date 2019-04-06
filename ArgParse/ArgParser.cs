@@ -45,7 +45,7 @@ namespace ArgParse
             Arguments.Add(name, new Argument(name, typeof(ValueType), defaultValue, metavar: metavar, help: help));
         }
 
-        public Dictionary<string, object> Parse(string[] args)
+        public Result Parse(string[] args)
         {
             var defaultValues = Arguments.Values.Where(a => a.DefaultValue != null).
                                 ToDictionary(x => x.Name, x => x.DefaultValue);
@@ -62,8 +62,9 @@ namespace ArgParse
                 throw new ArgumentException($"{RequiredArgs} are required but missed: ${missedArgs}");
             }
 
-            return specifiedValues.Concat(defaultValues.Where(e => !specifiedValues.ContainsKey(e.Key))).
-                   ToDictionary(e => e.Key, e => e.Value);
+            return new Result(specifiedValues.Concat(defaultValues.
+                              Where(e => !specifiedValues.ContainsKey(e.Key))).
+                              ToDictionary(e => e.Key, e => e.Value));
         }
 
         private KeyValuePair<string, object> GetOptionalArgumentValue(string arg, string value)
@@ -78,6 +79,34 @@ namespace ArgParse
             }
 
             return new KeyValuePair<string, object>(arg, System.Convert.ChangeType(value, Arguments[arg].Type));
+        }
+
+        public class Result
+        {
+            public Dictionary<string, object> Dict { get; private set; }
+
+            public Result(Dictionary<string, object> dict)
+            {
+                Dict = dict;
+            }
+
+            public Type Get<Type>(string name)
+            {
+                return (Type)System.Convert.ChangeType(Dict[name], typeof(Type));
+            }
+
+            public bool ContainsKey(string name)
+            {
+                return Dict.ContainsKey(name);
+            }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return Dict[name];
+                }
+            }
         }
 
         public class Argument

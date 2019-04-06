@@ -59,9 +59,10 @@ namespace ArgParse.Tests
             var parser = new ArgParser(desc: "default option");
             parser.AddArgument("--option", "default");
 
-            var dict = parser.Parse(new string[0]);
-            Assert.IsTrue(dict.ContainsKey("--option"));
-            Assert.AreEqual<string>("default", (string)dict["--option"]);
+            var result = parser.Parse(new string[0]);
+            Assert.IsTrue(result.ContainsKey("--option"));
+            Assert.AreEqual<string>("default", result.Get<string>("--option"));
+            Assert.AreEqual<string>("default", (string)result["--option"]);
         }
 
         [TestMethod()]
@@ -70,9 +71,10 @@ namespace ArgParse.Tests
             var parser = new ArgParser(desc: "not default option");
             parser.AddArgument("--option", "default");
 
-            var dict = parser.Parse("--option not-default".Split(' '));
-            Assert.IsTrue(dict.ContainsKey("--option"));
-            Assert.AreEqual<string>("not-default", (string)dict["--option"]);
+            var result = parser.Parse("--option not-default".Split(' '));
+            Assert.IsTrue(result.ContainsKey("--option"));
+            Assert.AreEqual<string>("not-default", result.Get<string>("--option"));
+            Assert.AreEqual<string>("not-default", (string)result["--option"]);
         }
 
         [TestMethod()]
@@ -82,11 +84,13 @@ namespace ArgParse.Tests
             parser.AddArgument("--option", "default");
             parser.AddArgument<int>("--int-option");
 
-            var dict = parser.Parse("--option not-default --int-option 1".Split(' '));
-            Assert.IsTrue(dict.ContainsKey("--option"));
-            Assert.AreEqual<string>("not-default", (string)dict["--option"]);
-            Assert.IsTrue(dict.ContainsKey("--int-option"));
-            Assert.AreEqual<int>(1, (int)dict["--int-option"]);
+            var result = parser.Parse("--option not-default --int-option 1".Split(' '));
+            Assert.IsTrue(result.ContainsKey("--option"));
+            Assert.AreEqual<string>("not-default", (string)result["--option"]);
+            Assert.AreEqual<string>("not-default", result.Get<string>("--option"));
+            Assert.IsTrue(result.ContainsKey("--int-option"));
+            Assert.AreEqual<int>(1, (int)result["--int-option"]);
+            Assert.AreEqual<int>(1, result.Get<int>("--int-option"));
         }
 
         [TestMethod()]
@@ -107,7 +111,7 @@ namespace ArgParse.Tests
             var parser = new ArgParser(desc: "unknown option");
             parser.AddArgument("--option", "default");
 
-            var dict = parser.Parse("--option not-default --unknown-option 123".Split(' '));
+            parser.Parse("--option not-default --unknown-option 123".Split(' '));
         }
 
         [TestMethod()]
@@ -118,7 +122,7 @@ namespace ArgParse.Tests
             parser.AddArgument("--option", "default");
             parser.AddArgument("--required");
 
-            var dict = parser.Parse("--option not-default".Split(' '));
+            parser.Parse("--option not-default".Split(' '));
         }
 
         [TestMethod()]
@@ -128,7 +132,7 @@ namespace ArgParse.Tests
             var parser = new ArgParser(desc: "unknown option");
             parser.AddArgument("--option", "default");
 
-            var dict = parser.Parse("--option not-default --invalid-arg-name 123".Split(' '));
+            parser.Parse("--option not-default --invalid-arg-name 123".Split(' '));
         }
 
         [TestMethod()]

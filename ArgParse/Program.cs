@@ -22,7 +22,7 @@ namespace ArgParse
                 parser.AddArgument<string>("--host", "localhost");
                 parser.AddArgument<int>("--port", 80);
 
-                Dictionary<string, object> args = parser.Parse("--host 192.168.0.1 --port 8080".Split(' '));
+                var args = parser.Parse("--host 192.168.0.1 --port 8080".Split(' '));
 
                 System.Console.WriteLine((string)args["--host"]);
                 System.Console.WriteLine((int)args["--port"]);
